@@ -9,49 +9,84 @@
     💬
 </div>
 
+
+
 <!-- Chat Modal -->
 <div id="chat-modal" class="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center" style="display:none;">
-    <div class="bg-white p-6 rounded-lg shadow-lg w-full sm:max-w-3xl max-h-[90vh] overflow-y-auto flex flex-col justify-between">
+    <div class="w-full max-w-4xl bg-white shadow-lg rounded-lg flex h-[80vh]">
+        
+        <!-- Sidebar (Contacts List) -->
+        <div class="w-1/3 bg-gray-200 p-4 rounded-l-lg overflow-y-auto">
+            <h2 class="text-lg font-semibold mb-3">Contacts</h2>
+            
+            <!-- Search Bar -->
+            <input type="text" id="search-input" placeholder="Search contacts..." 
+                class="w-full p-2 mb-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
+                onkeyup="filterContacts()">
 
-        <!-- Spinner -->
-        <div class="spinner" style="display:none;">
-            <div class=" absolute inset-0 bg-white bg-opacity-75 flex items-center justify-center">
-                <div class="w-10 h-10 border-4 border-indigo-500 border-t-transparent rounded-full animate-spin"></div>
-            </div>
+            <!-- Contacts List -->
+            <ul id="contacts-list" class="space-y-2">
+                <li class="p-2 bg-white rounded-lg shadow cursor-pointer hover:bg-gray-100" onclick="openChat('Alice')">Alice</li>
+                <li class="p-2 bg-white rounded-lg shadow cursor-pointer hover:bg-gray-100" onclick="openChat('Bob')">Bob</li>
+                <li class="p-2 bg-white rounded-lg shadow cursor-pointer hover:bg-gray-100" onclick="openChat('Charlie')">Charlie</li>
+                <li class="p-2 bg-white rounded-lg shadow cursor-pointer hover:bg-gray-100" onclick="openChat('David')">David</li>
+                <li class="p-2 bg-white rounded-lg shadow cursor-pointer hover:bg-gray-100" onclick="openChat('Eve')">Eve</li>
+            </ul>
         </div>
 
-        <h2 class="text-xl font-semibold text-gray-700 mb-4">Create Message</h2>
-        <!-- Modal Form for Adding Product -->
-        <form id="frmSendChat">
+        <!-- Chat Area -->
+        <div class="w-2/3 flex flex-col rounded-r-lg">
+            <!-- Chat Header -->
+            <div class="bg-blue-500 text-white text-center py-3 text-lg font-semibold rounded-tr-lg" id="chat-header">
+                Select a contact
+            </div>
 
-        <input type="hidden" name="IDsentFrom" value="<?=$session_account[0]['id']?>">
-            <!-- Spinner -->
-        <div class="spinner" id="spinner" style="display:none;">
-            <div class="absolute inset-0 bg-white bg-opacity-75 flex items-center justify-center">
-            <div class="w-10 h-10 border-4 border-indigo-500 border-t-transparent rounded-full animate-spin"></div>
+            <!-- Chat Messages -->
+            <div id="chat-box" class="flex-1 overflow-y-auto p-4 space-y-2">
+                <p class="text-gray-500 text-center">No chat selected</p>
+            </div>
+
+            <!-- Input Box -->
+            <div class="p-3 border-t flex items-center">
+                <input type="file" id="file-input" class="hidden" onchange="handleFileUpload()">
+                <label for="file-input" class="cursor-pointer bg-gray-200 px-3 py-2 rounded-lg mr-2 hover:bg-gray-300">
+                    <span class="material-icons">attach_file</span>
+                </label>
+                <div id="file-preview" class="text-sm text-gray-600 hidden"></div>
+                <input id="message-input" type="text" placeholder="Type a message..."
+                    class="flex-1 border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400">
+                <button onclick="sendMessage()" class="ml-2 bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600">
+                    Send
+                </button>
             </div>
         </div>
-        <div class="relative w-full">
-            <!-- Search Input Field -->
-            <input type="text" id="search_sentTo" placeholder="To"
-                class="w-full border-b-2 border-gray-300 p-2 text-gray-700 focus:ring-2 focus:ring-blue-500 focus:outline-none transition-all rounded-md" required>
-            <!-- Suggestion List -->
-            <ul id="searchResults" class="absolute w-full mt-1 bg-white border border-gray-300 shadow-md rounded-md max-h-60 overflow-auto hidden z-10 cursor-pointer"></ul>
-            <input type="hidden" id="selectedAdminId" name="IDsentTo">
-        </div>
-
-         
-            <textarea placeholder="Write Messages..." class="w-full h-40 border p-2 mt-2 text-gray-700 focus:outline-none rounded-md" name="messages" required></textarea>
-           
-            <div class="flex items-center mt-4 space-x-2">
-                <button type="submit" id="btnSendReport" class="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700">Send</button>
-                <input type="file" accept="image/*" class="p-2 border rounded-md text-gray-700" name="imagesProof">
-            </div>
-        </form>
     </div>
 </div>
 
 <script>
+
+$(document).ready(function() {
+    $('#search-input').on('keyup', function() {
+        var value = $(this).val().toLowerCase();
+        $('#contacts-list li').filter(function() {
+            $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1);
+        });
+    });
+});
+
+function handleFileUpload() {
+    const fileInput = document.getElementById('file-input');
+    const filePreview = document.getElementById('file-preview');
+    
+    if (fileInput.files.length > 0) {
+        filePreview.textContent = `Attached: ${fileInput.files[0].name}`;
+        filePreview.classList.remove('hidden');
+    } else {
+        filePreview.classList.add('hidden');
+    }
+}
+
+
   $("#chat-button").click(function() {
         $("#chat-modal").fadeIn();
     });
