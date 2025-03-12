@@ -43,11 +43,7 @@
         <!-- Chat Area -->
         <div class="w-2/3 flex flex-col rounded-r-lg">
             
-            <!-- Spinner -->
-            <div class="spinner absolute inset-0 bg-white bg-opacity-75 flex items-center justify-center" style="display:none;">
-                <div class="w-10 h-10 border-4 border-indigo-500 border-t-transparent rounded-full animate-spin"></div>
-            </div>
-
+          
             <!-- Chat Header -->
             <div class="bg-blue-500 text-white text-center py-3 text-lg font-semibold rounded-tr-lg" id="chat-header">
                 Select a contact
@@ -60,7 +56,7 @@
 
             <!-- Input Box -->
             <form id="frmSend_chat" class="p-3 border-t flex items-center">
-                <input type="file" id="file-input" class="hidden" onchange="handleFileUpload()">
+                <input type="file" id="file-input" name="file-input" class="hidden" onchange="handleFileUpload()">
                 <label for="file-input" class="cursor-pointer bg-gray-200 px-3 py-2 rounded-lg mr-2 hover:bg-gray-300">
                     <span class="material-icons">attach_file</span>
                 </label>
@@ -135,8 +131,7 @@ $(document).ready(function () {
     var formData = new FormData(this);
     formData.append('requestType', 'send_chat');
 
-    $('.spinner').show();
-    $('#btnSend_chat').prop('disabled', true);
+
 
     $.ajax({
         type: "POST",
@@ -145,9 +140,14 @@ $(document).ready(function () {
         processData: false,
         contentType: false,
         success: function (response) {
-          
-        },
+            if (response === "success") {
+                $("#file-input").val("");  // Clear file input
+                $("#message-input").val("");  // Clear message input
+                $("#file-preview").html("").addClass("hidden");  // Clear and hide file preview
+            }
+        }
     });
+
 });
 
 });
