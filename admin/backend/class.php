@@ -37,7 +37,21 @@ class global_class extends db_connect
             return []; // Return an empty array if query fails
         }
     }
+   
+    public function send_chat($sender_id,$reciever_id, $messageinput, $fileInput,$system)
+    {
+        $query = $this->conn->prepare("INSERT INTO `chat_messages` (sender_id,receiver_id, message_text, message_media,systemFrom) VALUES (?,?,?,?,?)");
+        if ($query === false) {
+            return false; 
+        }
+        $query->bind_param("sssss",$sender_id,$reciever_id, $messageinput, $fileInput,$system);
     
+        if ($query->execute()) {
+            return true; 
+        } else {
+            return false; 
+        }
+    }
 
 
     

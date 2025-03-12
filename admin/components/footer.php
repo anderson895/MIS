@@ -11,9 +11,6 @@
 </div>
 
 
-
-
-
 <!-- Chat Modal -->
 <div id="chat-modal" class="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center" style="display:none;">
     <div class="w-full max-w-4xl bg-white shadow-lg rounded-lg flex h-[80vh]">
@@ -39,17 +36,21 @@
 
             <label for="library-list">Library System</label>
             <ul id="library-list" class="space-y-2">
-                <li class="text-gray-500">Loading alumni...</li>
+                <li class="text-gray-500">Loading library...</li>
             </ul>
         </div>
 
         <!-- Chat Area -->
         <div class="w-2/3 flex flex-col rounded-r-lg">
+            
+            <!-- Spinner -->
+            <div class="spinner absolute inset-0 bg-white bg-opacity-75 flex items-center justify-center" style="display:none;">
+                <div class="w-10 h-10 border-4 border-indigo-500 border-t-transparent rounded-full animate-spin"></div>
+            </div>
+
             <!-- Chat Header -->
             <div class="bg-blue-500 text-white text-center py-3 text-lg font-semibold rounded-tr-lg" id="chat-header">
                 Select a contact
-                <input class="text-black" type="text" id="sender_id" name="sender_id" value="<?=$_SESSION['id']?>" >
-                <input class="text-black" type="text" id="reciever_id" name="reciever_id" value="" >
             </div>
 
             <!-- Chat Messages -->
@@ -58,21 +59,29 @@
             </div>
 
             <!-- Input Box -->
-            <div class="p-3 border-t flex items-center">
+            <form id="frmSend_chat" class="p-3 border-t flex items-center">
                 <input type="file" id="file-input" class="hidden" onchange="handleFileUpload()">
                 <label for="file-input" class="cursor-pointer bg-gray-200 px-3 py-2 rounded-lg mr-2 hover:bg-gray-300">
                     <span class="material-icons">attach_file</span>
                 </label>
                 <div id="file-preview" class="text-sm text-gray-600 hidden"></div>
-                <input id="message-input" type="text" placeholder="Type a message..."
+                
+                <input id="message-input" name="message-input" type="text" placeholder="Type a message..."
                     class="flex-1 border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400">
-                <button onclick="sendMessage()" class="ml-2 bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600">
-                    Send
-                </button>
-            </div>
+                
+                <!-- Hidden Fields -->
+                <input type="hidden" id="sender_id" name="sender_id" value="<?=$_SESSION['id']?>">
+                <input type="hidden" id="reciever_id" name="reciever_id" value="">
+                <input type="hidden" id="system" name="system" value="">
+
+                <!-- Send Button -->
+                <button type="submit" id="btnSend_chat" class="ml-2 bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600">Send</button>
+            </form>
         </div>
+
     </div>
 </div>
+
 
 
 
@@ -84,10 +93,63 @@
 
 
 
+
+
 $(document).ready(function () {
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
     fetchAlumni();
     fetchMis();
     fetchLibrary();
+
+
+    $("#frmSend_chat").submit(function (e) {
+    e.preventDefault();
+
+    var fileInput = $("#file-input")[0].files; // Get files array
+    var message = $("#message-input").val().trim();   
+    var reciever_id = $("#reciever_id").val();   
+
+    if (!reciever_id) {
+        alertify.error("Select Contact First");
+        return;
+    }
+
+    if (fileInput.length === 0 && !message) { 
+        alertify.error("Attach a file or write a message first");
+        return;
+    }
+
+    var formData = new FormData(this);
+    formData.append('requestType', 'send_chat');
+
+    $('.spinner').show();
+    $('#btnSend_chat').prop('disabled', true);
+
+    $.ajax({
+        type: "POST",
+        url: "backend/end-points/controller.php",
+        data: formData,
+        processData: false,
+        contentType: false,
+        success: function (response) {
+          
+        },
+    });
+});
+
 });
 
 
@@ -188,6 +250,7 @@ $(document).on('click', '.target_chat_reciever', function () {
     var system = $(this).data('system');
    $('#chat-header').text(user_name);
    $('#reciever_id').val(user_id);
+   $('#system').val(system);
   
 
    console.log(system);
@@ -251,8 +314,7 @@ function handleFileUpload() {
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script src="https://cdn.datatables.net/2.1.8/js/dataTables.min.js"></script>
 
-<script src="js/app.js"></script>
-<script src="js/fetch_api.js"></script>
+
 
 
 
