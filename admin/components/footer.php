@@ -24,8 +24,7 @@
             
             <!-- Search Bar -->
             <input type="text" id="search-input" placeholder="Search contacts..." 
-                class="w-full p-2 mb-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
-                onkeyup="filterContacts()">
+                class="w-full p-2 mb-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400">
 
             <!-- Contacts List -->
             <label for="mis-list">MIS System</label>
@@ -199,7 +198,13 @@ $(document).on('click', '.target_chat_reciever', function () {
 $(document).ready(function() {
     $('#search-input').on('keyup', function() {
         var value = $(this).val().toLowerCase();
-        $('#contacts-list li').filter(function() {
+        $('#mis-list li').filter(function() {
+            $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1);
+        });
+        $('#alumni-list li').filter(function() {
+            $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1);
+        });
+        $('#library-list li').filter(function() {
             $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1);
         });
     });
