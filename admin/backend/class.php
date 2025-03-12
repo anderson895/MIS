@@ -23,5 +23,22 @@ class global_class extends db_connect
         return $items; 
     }
 
+
+    public function fetch_mis_user() {
+        $query = $this->conn->prepare("SELECT * FROM `user` WHERE status = ?");
+        
+        $active_status = 1; // Ensure correct data type (int)
+        $query->bind_param("i", $active_status);
+    
+        if ($query->execute()) {
+            $result = $query->get_result();
+            return $result->fetch_all(MYSQLI_ASSOC); // Return as an associative array
+        } else {
+            return []; // Return an empty array if query fails
+        }
+    }
+    
+
+
     
 }

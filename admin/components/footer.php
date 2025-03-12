@@ -1,4 +1,5 @@
- <!-- Main Content goes here -->
+
+<!-- Main Content goes here -->
  </main>
 </div>
 
@@ -11,13 +12,15 @@
 
 
 
+
+
 <!-- Chat Modal -->
 <div id="chat-modal" class="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center" style="display:none;">
     <div class="w-full max-w-4xl bg-white shadow-lg rounded-lg flex h-[80vh]">
         
         <!-- Sidebar (Contacts List) -->
         <div class="w-1/3 bg-gray-200 p-4 rounded-l-lg overflow-y-auto">
-            <h2 class="text-lg font-semibold mb-3">Contacts</h2>
+            <h2 class="text-lg font-semibold mb-3">Contacts list</h2>
             
             <!-- Search Bar -->
             <input type="text" id="search-input" placeholder="Search contacts..." 
@@ -25,12 +28,19 @@
                 onkeyup="filterContacts()">
 
             <!-- Contacts List -->
-            <ul id="contacts-list" class="space-y-2">
-                <li class="p-2 bg-white rounded-lg shadow cursor-pointer hover:bg-gray-100" onclick="openChat('Alice')">Alice</li>
-                <li class="p-2 bg-white rounded-lg shadow cursor-pointer hover:bg-gray-100" onclick="openChat('Bob')">Bob</li>
-                <li class="p-2 bg-white rounded-lg shadow cursor-pointer hover:bg-gray-100" onclick="openChat('Charlie')">Charlie</li>
-                <li class="p-2 bg-white rounded-lg shadow cursor-pointer hover:bg-gray-100" onclick="openChat('David')">David</li>
-                <li class="p-2 bg-white rounded-lg shadow cursor-pointer hover:bg-gray-100" onclick="openChat('Eve')">Eve</li>
+            <label for="mis-list">MIS System</label>
+            <ul id="mis-list" class="space-y-2">
+                <li class="text-gray-500">Loading mis...</li>
+            </ul>
+
+            <label for="alumni-list">Alumni System</label>
+            <ul id="alumni-list" class="space-y-2">
+                <li class="text-gray-500">Loading alumni...</li>
+            </ul>
+
+            <label for="library-list">Library System</label>
+            <ul id="library-list" class="space-y-2">
+                <li class="text-gray-500">Loading alumni...</li>
             </ul>
         </div>
 
@@ -39,6 +49,8 @@
             <!-- Chat Header -->
             <div class="bg-blue-500 text-white text-center py-3 text-lg font-semibold rounded-tr-lg" id="chat-header">
                 Select a contact
+                <input class="text-black" type="text" id="sender_id" name="sender_id" value="<?=$_SESSION['id']?>" >
+                <input class="text-black" type="text" id="reciever_id" name="reciever_id" value="" >
             </div>
 
             <!-- Chat Messages -->
@@ -63,7 +75,126 @@
     </div>
 </div>
 
+
+
+
+
+
+
 <script>
+
+
+
+$(document).ready(function () {
+    fetchAlumni();
+    fetchMis();
+    fetchLibrary();
+});
+
+
+function fetchMis() {
+    $.ajax({
+        url: 'backend/end-points/fetch_mis_user.php',
+        type: 'GET',
+        // dataType: 'json',
+        success: function (data) {
+            console.log(data);
+            let misList = $("#mis-list");
+
+            // Clear existing lists
+            misList.empty();
+
+            if (data.length === 0) {
+                misList.append(`<li class="text-gray-500">No users found</li>`);
+                return;
+            }
+
+            data.forEach(user => {
+                let userItem = `
+                    <li class="target_chat_reciever p-2 bg-white rounded-lg shadow cursor-pointer hover:bg-gray-100" data-system='mis' data-user_id=${user.id} data-user_name=${user.name}>
+                        ${user.name}
+                    </li>`;
+                    // If user_type is not categorized, add them to a default list
+                    misList.append(userItem);
+               
+            });
+        },
+    });
+}
+
+
+function fetchAlumni() {
+    $.ajax({
+        url: 'http://localhost/BCPAlumni-SMS3/alumni_system_api.php',
+        type: 'GET',
+        dataType: 'json',
+        success: function (data) {
+            let alumniList = $("#alumni-list");
+
+            // Clear existing lists
+            alumniList.empty();
+
+            if (data.length === 0) {
+                alumniList.append(`<li class="text-gray-500">No users found</li>`);
+                return;
+            }
+
+            data.forEach(user => {
+                let userItem = `
+                    <li class="target_chat_reciever p-2 bg-white rounded-lg shadow cursor-pointer hover:bg-gray-100" data-system='alumni' data-user_id=${user.id} data-user_name=${user.name}>
+                        ${user.name}
+                    </li>`;
+                    // If user_type is not categorized, add them to a default list
+                    alumniList.append(userItem);
+               
+            });
+        },
+    });
+}
+
+
+function fetchLibrary() {
+    $.ajax({
+        url: 'http://localhost/BCP_SMS3_Library/library_system_api.php',
+        type: 'GET',
+        dataType: 'json',
+        success: function (data) {
+            let libraryList = $("#library-list");
+
+            // Clear existing lists
+            libraryList.empty();
+
+            if (data.length === 0) {
+                libraryList.append(`<li class="text-gray-500">No users found</li>`);
+                return;
+            }
+
+            data.forEach(user => {
+                let userItem = `
+                    <li class="target_chat_reciever p-2 bg-white rounded-lg shadow cursor-pointer hover:bg-gray-100" data-system='library' data-user_id=${user.user_id} data-user_name=${user.name}>
+                        ${user.name}
+                    </li>`;
+                    // If user_type is not categorized, add them to a default list
+                    libraryList.append(userItem);
+               
+            });
+        },
+    });
+}
+
+
+$(document).on('click', '.target_chat_reciever', function () {
+    var user_id = $(this).data('user_id');
+    var user_name = $(this).data('user_name');
+    var system = $(this).data('system');
+   $('#chat-header').text(user_name);
+   $('#reciever_id').val(user_id);
+  
+
+   console.log(system);
+});
+
+
 
 $(document).ready(function() {
     $('#search-input').on('keyup', function() {
@@ -116,6 +247,7 @@ function handleFileUpload() {
 <script src="https://cdn.datatables.net/2.1.8/js/dataTables.min.js"></script>
 
 <script src="js/app.js"></script>
+<script src="js/fetch_api.js"></script>
 
 
 
