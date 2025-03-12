@@ -20,7 +20,7 @@
             </div>
         </div>
 
-        <h2 class="text-xl font-semibold text-gray-700 mb-4">Create Report</h2>
+        <h2 class="text-xl font-semibold text-gray-700 mb-4">Create Message</h2>
         <!-- Modal Form for Adding Product -->
         <form id="frmSendChat">
 

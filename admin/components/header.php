@@ -67,7 +67,7 @@ if (isset($_SESSION['id'])) {
       </a>
 
       <a href="manage_user.php" class="flex items-center lg:justify-start space-x-3 text-gray-600 hover:text-blue-500 hover:bg-gray-100 px-4 py-2 rounded-md transition-all duration-300">
-          <span class="material-icons">local_shipping</span>
+          <span class="material-icons">group</span>
           <span>Manage user </span>
       </a>
 
@@ -79,6 +79,11 @@ if (isset($_SESSION['id'])) {
       <a href="approval.php" class="flex items-center lg:justify-start space-x-3 text-gray-600 hover:text-blue-500 hover:bg-gray-100 px-4 py-2 rounded-md transition-all duration-300">
           <span class="material-icons">rule</span>
           <span>Approval</span>
+      </a>
+
+      <a href="chatroom.php" class="flex items-center lg:justify-start space-x-3 text-gray-600 hover:text-blue-500 hover:bg-gray-100 px-4 py-2 rounded-md transition-all duration-300">
+          <span class="material-icons">forum</span>
+          <span>Chat room</span>
       </a>
       
     
