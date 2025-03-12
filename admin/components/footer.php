@@ -50,8 +50,11 @@
             </div>
 
             <!-- Chat Messages -->
-            <div id="chat-box" class="flex-1 overflow-y-auto p-4 space-y-2">
-                <p class="text-gray-500 text-center">No chat selected</p>
+            <div id="chat-box" class="flex-1 overflow-y-auto p-4 space-y-4 bg-gray-50">
+                <div class="chat-messages">
+               
+                </div>
+                    
             </div>
 
             <!-- Input Box -->
@@ -159,7 +162,7 @@ function fetchMis() {
         type: 'GET',
         // dataType: 'json',
         success: function (data) {
-            console.log(data);
+            // console.log(data);
             let misList = $("#mis-list");
 
             // Clear existing lists
@@ -252,9 +255,80 @@ $(document).on('click', '.target_chat_reciever', function () {
    $('#reciever_id').val(user_id);
    $('#system').val(system);
   
-
-   console.log(system);
+   fetchChatMessages(user_id);
+   console.log('click');
 });
+
+
+
+function fetchChatMessages(receiver_id) {
+    if (!receiver_id) return;
+
+    var UserID = $("#UserID").val(); // Ensure this exists in HTML
+    let chatBox = $(".chat-messages");
+
+    $.ajax({
+        url: 'backend/end-points/fetch_user_chat.php',
+        type: "POST",
+        data: { receiver_id: receiver_id },
+        dataType: "json",
+        success: function (response) {
+            console.log(response.messages); // Debugging
+
+            chatBox.html(""); // Clear previous messages
+
+            if (response.status === "success" && response.messages.length > 0) {
+                $.each(response.messages, function (index, message) {
+                    let isSender = (message.sender_id == UserID);
+                    let alignmentClass = isSender ? 'justify-end' : 'justify-start';
+                    let bgColor = isSender ? 'bg-blue-500 text-white' : 'bg-gray-200 text-gray-800';
+
+                    let mediaHTML = "";
+                    
+                    if (message.message_media) {
+                        let filePath = `upload_files/${message.message_media}`;
+                        let fileName = message.message_media.split('/').pop();
+
+                        mediaHTML = `
+                            <div class="flex items-center gap-2 mt-2">
+                                <span class="material-icons text-gray-500">attach_file</span>
+                                <a href="${filePath}" target="_blank" download="${fileName}" class="text-white-500 underline">${fileName}</a>
+                            </div>
+                        `;
+                    }
+
+                    let messageHTML = `
+                        <div class="flex ${alignmentClass} mb-2">
+                            <div class="${bgColor} p-3 rounded-lg shadow max-w-xs">
+                                <p class="text-sm">${message.message_text}</p>
+                                ${mediaHTML}
+                            </div>
+                        </div>
+                    `;
+                    chatBox.append(messageHTML);
+                });
+
+                // Smooth scroll to the latest message
+                chatBox.animate({ scrollTop: chatBox[0].scrollHeight }, 300);
+            } else {
+                chatBox.html(`<div class="text-center text-gray-500">No messages found. Start the conversation!</div>`);
+            }
+        },
+        error: function () {
+            chatBox.html(`<div class="text-center text-red-500">Error fetching messages.</div>`);
+            console.log("Error fetching messages.");
+        }
+    });
+}
+
+
+setInterval(function () {
+        let receiver_id = $("#reciever_id").val();
+        if (receiver_id) {
+            fetchChatMessages(receiver_id);
+        }
+    }, 2000);
+
 
 
 

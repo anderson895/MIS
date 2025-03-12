@@ -9,6 +9,24 @@ class global_class extends db_connect
         $this->connect();
     }
 
+    public function fetchUserChats($sender_id, $receiver_id) {
+        $sql = "SELECT * from chat_messages as cm WHERE (cm.sender_id = ? AND cm.receiver_id = ?) 
+                   OR (cm.sender_id = ? AND cm.receiver_id = ?)";
+    
+        $stmt = $this->conn->prepare($sql);
+        $stmt->bind_param("iiii", $sender_id, $receiver_id, $receiver_id, $sender_id);
+        $stmt->execute();
+        $result = $stmt->get_result();
+    
+        $messages = [];
+        while ($row = $result->fetch_assoc()) {
+            $messages[] = $row;
+        }
+    
+        return $messages;
+    }
+
+
 
     public function check_account($user_id ) {
         $query = "SELECT * FROM user WHERE id = $user_id";
