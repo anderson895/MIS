@@ -42,25 +42,17 @@ class global_class extends db_connect
     }
 
 
-    public function fetch_mis_user() {
-        $query = $this->conn->prepare("SELECT * FROM `user` WHERE status = ?");
-        
-        $active_status = 1; // Ensure correct data type (int)
-        $query->bind_param("i", $active_status);
-    
-        if ($query->execute()) {
-            $result = $query->get_result();
-            return $result->fetch_all(MYSQLI_ASSOC); // Return as an associative array
-        } else {
-            return []; // Return an empty array if query fails
-        }
-    }
-   
-    public function send_chat($sender_id, $reciever_id, $messageinput, $fileInput, $system)
+        public function send_chat($sender_id, $reciever_id, $messageinput, $fileInput, $system)
     {
-        // Set status based on file input
+        $user = $this->check_account($sender_id);
+
         $status = !empty($fileInput) ? 2 : 1;
 
+        if (!empty($user) && $user[0]['type'] === "super admin") {
+            $status = 1;
+        }
+
+        // Prepare query to insert chat message
         $query = $this->conn->prepare("INSERT INTO `chat_messages` (sender_id, receiver_id, message_text, message_media, systemFrom, message_status) VALUES (?, ?, ?, ?, ?, ?)");
         
         if ($query === false) {
@@ -71,6 +63,24 @@ class global_class extends db_connect
 
         return $query->execute();
     }
+
+
+
+    public function fetch_mis_user($sender_id){
+        $query = $this->conn->prepare("SELECT * FROM `user` WHERE status = ? AND id != ?");
+        
+        $active_status = 1; // Ensure correct data type (int)
+        $query->bind_param("ii", $active_status,$sender_id);
+    
+        if ($query->execute()) {
+            $result = $query->get_result();
+            return $result->fetch_all(MYSQLI_ASSOC); // Return as an associative array
+        } else {
+            return []; // Return an empty array if query fails
+        }
+    }
+   
+   
 
 
 

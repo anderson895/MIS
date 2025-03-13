@@ -303,7 +303,7 @@ function fetchChatMessages(receiver_id) {
                             mediaHTML = `
                                 <div class="flex items-center gap-2 mt-2">
                                     <span class="material-icons text-gray-500">attach_file</span>
-                                    <a href="${filePath}" target="_blank" download="${fileName}" class="text-blue-500 underline">${fileName}</a>
+                                    <a href="../assets/${filePath}" target="_blank" download="${fileName}" class="text-white-500 underline">${fileName}</a>
                                 </div>
                             `;
                         }
