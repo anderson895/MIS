@@ -38,7 +38,7 @@ include "components/header.php";
         <!-- Form for Adding User -->
         <form id="updateUserForm">
 
-            <div class="mb-3">
+            <div hidden class="mb-3">
                 <label class="block text-sm font-medium text-gray-700">User ID</label>
                 <input type="text" id="update_userid" name="userid" class="w-full p-2 border rounded-md" required>
             </div>
