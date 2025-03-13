@@ -75,7 +75,7 @@ class global_class extends db_connect
 
 
     public function fetch_all_user(){
-        $query = $this->conn->prepare("SELECT * FROM `user`");
+        $query = $this->conn->prepare("SELECT * FROM `user` where status='1'");
 
         if ($query->execute()) {
             $result = $query->get_result();
@@ -83,6 +83,18 @@ class global_class extends db_connect
         }
     }
 
+
+    public function DeleteAdmin($admin_id) {
+        $query = $this->conn->prepare("UPDATE user SET status = '0' WHERE id = ?");
+        $query->bind_param("i", $admin_id); 
+    
+        if ($query->execute()) {
+            return true; 
+        } else {
+            return false; 
+        }
+    }
+    
 
 
     public function AddUser($fullname, $email, $userType,$hashed_password) {

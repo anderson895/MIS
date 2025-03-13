@@ -2,7 +2,7 @@
 
 $fetch_all_user = $db->fetch_all_user();
 
-if ($fetch_all_user): ?>
+if ($fetch_all_user->num_rows>0): ?>
     <?php foreach ($fetch_all_user as $user):
         ?>
        <tr>

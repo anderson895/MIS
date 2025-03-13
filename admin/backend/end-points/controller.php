@@ -121,6 +121,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             }
 
             
+        }else if ($_POST['requestType'] === "DeleteAdmin") {
+            $admin_id = $_POST['admin_id'];
+    
+            if ($db->DeleteAdmin($admin_id)) {
+                echo json_encode([
+                    'status' => 'success',
+                    'message' => 'Admin deleted successfully!'
+                ]);
+            } else {
+                echo json_encode([
+                    'status' => 'error',
+                    'message' => 'Failed to delete admin. Please try again!'
+                ]);
+            }
         } else {
             echo 'requestType NOT FOUND';
         }

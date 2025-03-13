@@ -87,3 +87,44 @@ $("#addUserForm").submit(function (e) {
         }
     });
     });
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    $(document).on("click", ".TogglerDeleteUser", function () {
+        var adminId = $(this).data("id");
+        
+        alertify.confirm("Delete Admin", "Are you sure you want to delete this ?", function () {
+            $.ajax({
+                type: "POST",
+                url: "backend/end-points/controller.php",
+                data: {
+                    requestType: "DeleteAdmin",
+                    admin_id: adminId
+                },
+                dataType: "json",
+                success: function (response) {
+                    if (response.status === "success") {
+                        alertify.success(response.message);
+                        setTimeout(function () {
+                            location.reload(); // Refresh page after deletion
+                        }, 1000);
+                    } else {
+                        alertify.error(response.message);
+                    }
+                },
+            });
+        }, function () {
+            alertify.error("Deletion canceled.");
+        });
+        });
