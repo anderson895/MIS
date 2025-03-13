@@ -10,13 +10,15 @@ if ($fetch_all_user): ?>
             <td class="p-2"><?php echo htmlspecialchars($user['email']); ?></td>
             <td class="p-2"><?php echo htmlspecialchars($user['type']); ?></td>
             <td class="p-2 flex space-x-2">
-                <a href="update.php?id=<?php echo $user['id']; ?>" 
-                class="px-3 py-1 bg-blue-500 text-white rounded hover:bg-blue-600">
-                Update
-                </a>
-                <a href="delete.php?id=<?php echo $user['id']; ?>" 
-                class="px-3 py-1 bg-red-500 text-white rounded hover:bg-red-600"
-                onclick="return confirm('Are you sure you want to delete this user?');">
+                <button class="showUpdateModal TogglerUpdateUser px-3 py-1 bg-blue-500 text-white rounded hover:bg-blue-600"
+                data-id="<?= $user['id']; ?>"
+                data-name="<?= $user['name']; ?>"
+                data-email="<?= $user['email']; ?>"
+                data-type="<?= $user['type']; ?>"
+                >
+                Update</button>
+                <button class="TogglerDeleteUser px-3 py-1 bg-red-500 text-white rounded hover:bg-red-600"
+                data-id=<?= $user['id']; ?>>
                 Delete
                 </a>
             </td>

@@ -114,5 +114,62 @@ class global_class extends db_connect
     }
 
 
+
+
+
+
+
+
+
+
+
+    public function updateUser($userid, $fullname, $email, $userType, $hashed_password) {
+        // Check if email already exists for another user
+        $check_query = $this->conn->prepare("SELECT id FROM user WHERE email = ? AND id != ?");
+        $check_query->bind_param("si", $email, $userid);
+        $check_query->execute();
+        $check_query->store_result();
+    
+        if ($check_query->num_rows > 0) {
+            return "email_exists";  // Return a flag indicating email already exists
+        }
+    
+        // Build the UPDATE query dynamically
+        $query_str = "UPDATE user SET `name` = ?, `email` = ?, `type` = ?";
+        $params = [$fullname, $email, $userType];
+        $types = "sss";
+    
+        // Isama lang ang password kung may laman
+        if (!empty($hashed_password)) {
+            $query_str .= ", `password` = ?";
+            $params[] = $hashed_password;
+            $types .= "s";
+        }
+    
+        // Tapusin ang query
+        $query_str .= " WHERE id = ?";
+        $params[] = $userid;
+        $types .= "i";
+    
+        // Prepare and bind parameters
+        $query = $this->conn->prepare($query_str);
+        $query->bind_param($types, ...$params);
+    
+        if ($query->execute()) {
+            return [
+                'id' => $userid,
+                'fullname' => $fullname,
+                'email' => $email,
+                'userType' => $userType,
+                'hashed_password' => !empty($hashed_password) ? $hashed_password : "not_updated"
+            ];
+        } else {
+            return false;  // Return false if update failed
+        }
+    }
+    
+    
+
+
     
 }

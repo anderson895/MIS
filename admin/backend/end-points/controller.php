@@ -59,12 +59,48 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $password = $_POST['password'];
             $userType = $_POST['userType'];
           
-           // Hash the password using SHA-256
-            $hashed_password = hash('sha256', $password);
+           $hashed_password = password_hash($password, PASSWORD_DEFAULT);
+
 
 
             // Call the method
             $user = $db->AddUser($fullname, $email, $userType,$hashed_password);
+
+            if ($user === "email_exists") {
+                echo json_encode([
+                    'status' => 'error',
+                    'message' => 'Email already exists!'
+                ]);
+            } elseif ($user) {
+                echo json_encode([
+                    'status' => 'success',
+                    'message' => 'User added successfully!',
+                    'data' => $user
+                ]);
+            } else {
+                echo json_encode([
+                    'status' => 'error',
+                    'message' => 'User addition failed!'
+                ]);
+            }
+
+            
+        }else if ($_POST['requestType'] == 'updateUser') {
+
+           
+            $userid = $_POST['userid'];
+            $fullname = $_POST['fullname'];
+            $email = $_POST['email'];
+            $password = $_POST['password'];
+            $userType = $_POST['userType'];
+          
+           
+           $hashed_password = password_hash($password, PASSWORD_DEFAULT);
+
+
+
+            // Call the method
+            $user = $db->updateUser($userid,$fullname, $email, $userType,$hashed_password);
 
             if ($user === "email_exists") {
                 echo json_encode([
