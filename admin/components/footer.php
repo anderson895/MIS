@@ -273,28 +273,40 @@ function fetchChatMessages(receiver_id) {
         data: { receiver_id: receiver_id },
         dataType: "json",
         success: function (response) {
-            console.log(response.messages); // Debugging
+            console.log(response.messages);
 
-            chatBox.html(""); // Clear previous messages
+            chatBox.html("");
 
             if (response.status === "success" && response.messages.length > 0) {
                 $.each(response.messages, function (index, message) {
                     let isSender = (message.sender_id == UserID);
-                    let alignmentClass = isSender ? 'justify-end' : 'justify-start';
-                    let bgColor = isSender ? 'bg-blue-500 text-white' : 'bg-gray-200 text-gray-800';
+                    let alignmentClass = isSender ? "justify-end" : "justify-start";
+                    let bgColor = isSender ? "bg-blue-500 text-white" : "bg-gray-200 text-gray-800";
 
                     let mediaHTML = "";
-                    
+
                     if (message.message_media) {
                         let filePath = `upload_files/${message.message_media}`;
-                        let fileName = message.message_media.split('/').pop();
+                        let fileName = message.message_media.split("/").pop();
 
-                        mediaHTML = `
-                            <div class="flex items-center gap-2 mt-2">
-                                <span class="material-icons text-gray-500">attach_file</span>
-                                <a href="${filePath}" target="_blank" download="${fileName}" class="text-white-500 underline">${fileName}</a>
-                            </div>
-                        `;
+                        if (message.message_status == 2) {
+                            // File is waiting for approval
+                            mediaHTML = `
+                                <div class="flex items-center gap-2 mt-2 text-white-500">
+                                    <span class="material-icons">insert_drive_file</span>
+                                    <span class="italic">This file is waiting for approval</span>
+                                </div>
+
+                            `;
+                        } else {
+                            // File is approved and downloadable
+                            mediaHTML = `
+                                <div class="flex items-center gap-2 mt-2">
+                                    <span class="material-icons text-gray-500">attach_file</span>
+                                    <a href="${filePath}" target="_blank" download="${fileName}" class="text-blue-500 underline">${fileName}</a>
+                                </div>
+                            `;
+                        }
                     }
 
                     let messageHTML = `
@@ -313,6 +325,7 @@ function fetchChatMessages(receiver_id) {
             } else {
                 chatBox.html(`<div class="text-center text-gray-500">No messages found. Start the conversation!</div>`);
             }
+
         },
         error: function () {
             chatBox.html(`<div class="text-center text-red-500">Error fetching messages.</div>`);

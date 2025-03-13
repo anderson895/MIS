@@ -56,18 +56,30 @@ class global_class extends db_connect
         }
     }
    
-    public function send_chat($sender_id,$reciever_id, $messageinput, $fileInput,$system)
+    public function send_chat($sender_id, $reciever_id, $messageinput, $fileInput, $system)
     {
-        $query = $this->conn->prepare("INSERT INTO `chat_messages` (sender_id,receiver_id, message_text, message_media,systemFrom) VALUES (?,?,?,?,?)");
+        // Set status based on file input
+        $status = !empty($fileInput) ? 2 : 1;
+
+        $query = $this->conn->prepare("INSERT INTO `chat_messages` (sender_id, receiver_id, message_text, message_media, systemFrom, message_status) VALUES (?, ?, ?, ?, ?, ?)");
+        
         if ($query === false) {
             return false; 
         }
-        $query->bind_param("sssss",$sender_id,$reciever_id, $messageinput, $fileInput,$system);
-    
+
+        $query->bind_param("sssssi", $sender_id, $reciever_id, $messageinput, $fileInput, $system, $status);
+
+        return $query->execute();
+    }
+
+
+
+    public function fetch_all_user(){
+        $query = $this->conn->prepare("SELECT * FROM `user`");
+
         if ($query->execute()) {
-            return true; 
-        } else {
-            return false; 
+            $result = $query->get_result();
+            return $result;
         }
     }
 
