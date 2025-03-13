@@ -99,6 +99,69 @@ $("#addUserForm").submit(function (e) {
 
 
 
+    
+    $(document).on("click", ".TogglerDeleteChat", function () {
+        var chat_id = $(this).data("id");
+        
+        alertify.confirm("Delete Chat", "Are you sure you want to delete this ?", function () {
+            $.ajax({
+                type: "POST",
+                url: "backend/end-points/controller.php",
+                data: {
+                    requestType: "DeleteChat",
+                    chat_id: chat_id
+                },
+                dataType: "json",
+                success: function (response) {
+                    if (response.status === "success") {
+                        alertify.success(response.message);
+                        setTimeout(function () {
+                            location.reload(); // Refresh page after deletion
+                        }, 1000);
+                    } else {
+                        alertify.error(response.message);
+                    }
+                },
+            });
+        }, function () {
+            alertify.error("Deletion canceled.");
+        });
+    });
+
+
+
+    $(document).on("click", ".TogglerAcceptChat", function () {
+        var chat_id = $(this).data("id");
+        
+        alertify.confirm("Approve File Sending", "Are you sure you want to approve this ?", function () {
+            $.ajax({
+                type: "POST",
+                url: "backend/end-points/controller.php",
+                data: {
+                    requestType: "ApproveChat",
+                    chat_id: chat_id
+                },
+                dataType: "json",
+                success: function (response) {
+                    if (response.status === "success") {
+                        alertify.success(response.message);
+                        setTimeout(function () {
+                            location.reload(); // Refresh page after deletion
+                        }, 1000);
+                    } else {
+                        alertify.error(response.message);
+                    }
+                },
+            });
+        }, function () {
+            alertify.error("Deletion canceled.");
+        });
+        });
+
+
+
+
+
 
 
     $(document).on("click", ".TogglerDeleteUser", function () {

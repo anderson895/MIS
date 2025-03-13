@@ -94,6 +94,25 @@ class global_class extends db_connect
     }
 
 
+    public function message_approval_list() {
+        $query = $this->conn->prepare("
+            SELECT chat_messages.*, 
+                   sender.name AS sender, 
+                   receiver.name AS receiver 
+            FROM chat_messages
+            LEFT JOIN user AS sender ON sender.id = chat_messages.sender_id
+            LEFT JOIN user AS receiver ON receiver.id = chat_messages.receiver_id
+            WHERE chat_messages.message_status = '2'
+        ");
+    
+        if ($query->execute()) {
+            return $query->get_result();
+        }
+    }
+    
+    
+
+
     public function DeleteAdmin($admin_id) {
         $query = $this->conn->prepare("UPDATE user SET status = '0' WHERE id = ?");
         $query->bind_param("i", $admin_id); 
@@ -106,6 +125,29 @@ class global_class extends db_connect
     }
     
 
+
+    public function DeleteChat($chat_id) {
+        $query = $this->conn->prepare("UPDATE chat_messages SET message_status = '0' WHERE chat_id  = ?");
+        $query->bind_param("i", $chat_id); 
+    
+        if ($query->execute()) {
+            return true; 
+        } else {
+            return false; 
+        }
+    }
+    
+    public function ApproveChat($chat_id) {
+        $query = $this->conn->prepare("UPDATE chat_messages SET message_status = '1' WHERE chat_id  = ?");
+        $query->bind_param("i", $chat_id); 
+    
+        if ($query->execute()) {
+            return true; 
+        } else {
+            return false; 
+        }
+    }
+    
 
     public function AddUser($fullname, $email, $userType,$hashed_password) {
         // Check if email already exists

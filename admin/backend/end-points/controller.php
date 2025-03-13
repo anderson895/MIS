@@ -135,6 +135,34 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     'message' => 'Failed to delete admin. Please try again!'
                 ]);
             }
+        }else if ($_POST['requestType'] === "DeleteChat") {
+            $chat_id = $_POST['chat_id'];
+    
+            if ($db->DeleteChat($chat_id)) {
+                echo json_encode([
+                    'status' => 'success',
+                    'message' => 'Chat deleted successfully!'
+                ]);
+            } else {
+                echo json_encode([
+                    'status' => 'error',
+                    'message' => 'Failed to delete admin. Please try again!'
+                ]);
+            }
+        }else if ($_POST['requestType'] === "ApproveChat") {
+            $chat_id = $_POST['chat_id'];
+    
+            if ($db->ApproveChat($chat_id)) {
+                echo json_encode([
+                    'status' => 'success',
+                    'message' => 'Chat deleted successfully!'
+                ]);
+            } else {
+                echo json_encode([
+                    'status' => 'error',
+                    'message' => 'Failed to delete admin. Please try again!'
+                ]);
+            }
         } else {
             echo 'requestType NOT FOUND';
         }
