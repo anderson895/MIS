@@ -424,5 +424,7 @@ function handleFileUpload() {
     overlay.classList.add('hidden');
   });
 </script>
+
+<script src="js/app.js"></script>
 </body>
 </html>

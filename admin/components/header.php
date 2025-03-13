@@ -8,9 +8,9 @@ if (isset($_SESSION['id'])) {
     $admin_id = intval($_SESSION['id']); // I-sanitize ang admin_id
 
     // Gamitin ang check_account method
-    $result = $db->check_account($admin_id);
+    $account = $db->check_account($admin_id);
 
-    if (!empty($result)) {
+    if (!empty($account)) {
       
     } else {
        header('location: index.php');

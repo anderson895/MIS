@@ -1,12 +1,14 @@
 <?php 
 include "components/header.php";
+
+
 ?>
 
 <div class="flex justify-between items-center bg-white p-4 mb-6 rounded-md shadow-md">
     <h2 class="text-lg font-semibold text-gray-700">Manage User</h2>
     <div class="w-10 h-10 bg-gray-300 rounded-full flex items-center justify-center text-lg font-bold text-white">
         <?php
-        echo substr(ucfirst($_SESSION['name']), 0, 1);
+        echo substr(ucfirst($account[0]['name']), 0, 1);
         ?>
     </div>
 </div>
@@ -20,8 +22,8 @@ include "components/header.php";
 </div>
 
 <!-- Modal Background -->
-<div id="addUserModal" class="fixed inset-0 bg-gray-800 bg-opacity-50 hidden flex justify-center items-center">
-    <div class="bg-white p-6 rounded-lg shadow-lg w-1/3">
+<div id="addUserModal" class="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center p-4 sm:p-6" style="display:none;">
+    <div class="bg-white p-4 sm:p-6 rounded-lg shadow-lg w-full max-w-sm sm:max-w-md md:max-w-lg lg:max-w-xl">
         <h2 class="text-lg font-semibold mb-4">Add New User</h2>
         
         <!-- Form for Adding User -->
@@ -35,23 +37,25 @@ include "components/header.php";
                 <input type="email" id="email" name="email" class="w-full p-2 border rounded-md" required>
             </div>
             <div class="mb-3">
-                <label class="block text-sm font-medium text-gray-700">password</label>
+                <label class="block text-sm font-medium text-gray-700">Password</label>
                 <input type="password" id="password" name="password" class="w-full p-2 border rounded-md" required>
             </div>
             <div class="mb-3">
                 <label class="block text-sm font-medium text-gray-700">User Type</label>
-                <select id="userType" class="w-full p-2 border rounded-md" required>
+                <select id="userType" name="userType" class="w-full p-2 border rounded-md" required>
                     <option value="admin">Admin</option>
                     <option value="super admin">Super admin</option>
                 </select>
             </div>
-            <div class="flex justify-end space-x-2">
-                <button type="button" id="closeModalBtn" class="px-4 py-2 bg-gray-400 text-white rounded-md">Cancel</button>
+            <div class="flex justify-end gap-2">
                 <button type="submit" class="px-4 py-2 bg-blue-500 text-white rounded-md">Save</button>
+                <button type="button" id="closeModalBtn" class="px-4 py-2 bg-gray-400 text-white rounded-md">Cancel</button>
+                
             </div>
         </form>
     </div>
 </div>
+
 
 <!-- Card for Table -->
 <div class="bg-white rounded-lg shadow-lg p-6">
@@ -88,38 +92,21 @@ include "components/footer.php";
     $(document).ready(function() {
         // Show modal
         $("#openModalBtn").click(function() {
-            $("#addUserModal").removeClass("hidden");
+            $("#addUserModal").fadeIn();
         });
 
         // Close modal
         $("#closeModalBtn").click(function() {
-            $("#addUserModal").addClass("hidden");
+            $("#addUserModal").fadeOut();
         });
 
         // Close modal when clicking outside the modal content
         $("#addUserModal").click(function(event) {
             if ($(event.target).is("#addUserModal")) {
-                $("#addUserModal").addClass("hidden");
+                $("#addUserModal").fadeOut();
             }
         });
 
-        // Submit form (for now, just console log the data)
-        $("#addUserForm").submit(function(event) {
-            event.preventDefault(); // Prevent actual form submission
-            let fullname = $("#fullname").val();
-            let email = $("#email").val();
-            let userType = $("#userType").val();
-            
-            console.log("New User:", fullname, email, userType);
-            
-            // Here you can use AJAX to send the data to your backend PHP script
-            // Example:
-            // $.post("backend/end-points/add_user.php", { fullname, email, userType }, function(response) {
-            //     alert("User added successfully!");
-            //     location.reload(); // Refresh table after adding user
-            // });
-
-            $("#addUserModal").addClass("hidden"); // Close modal after submission
-        });
+       
     });
 </script>

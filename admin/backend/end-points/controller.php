@@ -51,6 +51,40 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             } else {
                 echo "Error Messages .";
             }
+        }else if ($_POST['requestType'] == 'AddUser') {
+
+           
+            $fullname = $_POST['fullname'];
+            $email = $_POST['email'];
+            $password = $_POST['password'];
+            $userType = $_POST['userType'];
+          
+           // Hash the password using SHA-256
+            $hashed_password = hash('sha256', $password);
+
+
+            // Call the method
+            $user = $db->AddUser($fullname, $email, $userType,$hashed_password);
+
+            if ($user === "email_exists") {
+                echo json_encode([
+                    'status' => 'error',
+                    'message' => 'Email already exists!'
+                ]);
+            } elseif ($user) {
+                echo json_encode([
+                    'status' => 'success',
+                    'message' => 'User added successfully!',
+                    'data' => $user
+                ]);
+            } else {
+                echo json_encode([
+                    'status' => 'error',
+                    'message' => 'User addition failed!'
+                ]);
+            }
+
+            
         } else {
             echo 'requestType NOT FOUND';
         }

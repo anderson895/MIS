@@ -84,5 +84,35 @@ class global_class extends db_connect
     }
 
 
+
+    public function AddUser($fullname, $email, $userType,$hashed_password) {
+        // Check if email already exists
+        $check_query = $this->conn->prepare("SELECT id FROM user WHERE email = ?");
+        $check_query->bind_param("s", $email);
+        $check_query->execute();
+        $check_query->store_result();
+    
+        if ($check_query->num_rows > 0) {
+            return "email_exists";  // Return a flag indicating email already exists
+        }
+    
+        // Insert new user if email does not exist
+        $query = $this->conn->prepare("INSERT INTO user (`name`, `email`, `password`, `type`) VALUES (?, ?, ?, ?)");
+        $query->bind_param("ssss", $fullname, $email, $hashed_password, $userType);
+    
+        if ($query->execute()) {
+            return [
+                'id' => $this->conn->insert_id,  // Get last inserted ID
+                'fullname' => $fullname,
+                'email' => $email,
+                'hashed_password' => $hashed_password,
+                'userType' => $userType
+            ];
+        } else {
+            return false;  // Return false if insertion failed
+        }
+    }
+
+
     
 }
