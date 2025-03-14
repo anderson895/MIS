@@ -22,8 +22,8 @@ $("#updateUserForm").submit(function (e) {
                 setTimeout(function () {
                     location.reload();
                 }, 2000);
-            } else if (response.status === "error" && response.message === "Email already exists!") {
-                alertify.error("Email already exists. Try another email.");
+            } else if (response.status === "error" && response.message === "username already exists!") {
+                alertify.error("username already exists. Try another username.");
                 $('.spinner').hide();
                 $('#btnAddStudent').prop('disabled', false);
             } else {
@@ -69,8 +69,8 @@ $("#addUserForm").submit(function (e) {
                 setTimeout(function () {
                     location.reload();
                 }, 2000);
-            } else if (response.status === "error" && response.message === "Email already exists!") {
-                alertify.error("Email already exists. Try another email.");
+            } else if (response.status === "error" && response.message === "username already exists!") {
+                alertify.error("username already exists. Try another username.");
                 $('.spinner').hide();
                 $('#btnAddStudent').prop('disabled', false);
             } else {

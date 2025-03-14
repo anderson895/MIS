@@ -10,6 +10,7 @@ $db = new global_class();
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (isset($_POST['requestType'])) {
         if ($_POST['requestType'] == 'send_chat') {
+            
 
             if (isset($_FILES['file-input']) && $_FILES['file-input']['error'] == 0) {
                 $uploadedFile = $_FILES['file-input'];
@@ -41,10 +42,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $sender_id = $_POST['sender_id'];
             $reciever_id = $_POST['reciever_id'];
             $messageinput = $_POST['message-input'];
-            $system = $_POST['system'];
+            $systemFrom = $_POST['systemFrom'];
+            $systemTo = $_POST['systemTo'];
+            
             
             // Insert the car record into the database
-            $user = $db->send_chat($sender_id,$reciever_id, $messageinput, $fileInput,$system);
+            $user = $db->send_chat($sender_id,$reciever_id, $messageinput, $fileInput,$systemFrom,$systemTo);
             
             if ($user) {
                 echo "success";
@@ -55,7 +58,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
            
             $fullname = $_POST['fullname'];
-            $email = $_POST['email'];
+            $username = $_POST['username'];
             $password = $_POST['password'];
             $userType = $_POST['userType'];
           
@@ -64,12 +67,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 
             // Call the method
-            $user = $db->AddUser($fullname, $email, $userType,$hashed_password);
+            $user = $db->AddUser($fullname, $username, $userType,$hashed_password);
 
-            if ($user === "email_exists") {
+            if ($user === "username_exists") {
                 echo json_encode([
                     'status' => 'error',
-                    'message' => 'Email already exists!'
+                    'message' => 'username already exists!'
                 ]);
             } elseif ($user) {
                 echo json_encode([
@@ -87,38 +90,40 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             
         }else if ($_POST['requestType'] == 'updateUser') {
 
-           
             $userid = $_POST['userid'];
             $fullname = $_POST['fullname'];
-            $email = $_POST['email'];
+            $username = $_POST['username'];
             $password = $_POST['password'];
             $userType = $_POST['userType'];
-          
-           
-           $hashed_password = password_hash($password, PASSWORD_DEFAULT);
-
-
-
+            
+            // Check if password is empty
+            if (!empty($password)) {
+                $hashed_password = password_hash($password, PASSWORD_DEFAULT);
+            } else {
+                $hashed_password = ""; // Set as empty string
+            }
+            
             // Call the method
-            $user = $db->updateUser($userid,$fullname, $email, $userType,$hashed_password);
-
-            if ($user === "email_exists") {
+            $user = $db->updateUser($userid, $fullname, $username, $userType, $hashed_password);
+            
+            if ($user === "username_exists") {
                 echo json_encode([
                     'status' => 'error',
-                    'message' => 'Email already exists!'
+                    'message' => 'Username already exists!'
                 ]);
             } elseif ($user) {
                 echo json_encode([
                     'status' => 'success',
-                    'message' => 'User added successfully!',
+                    'message' => 'User updated successfully!',
                     'data' => $user
                 ]);
             } else {
                 echo json_encode([
                     'status' => 'error',
-                    'message' => 'User addition failed!'
+                    'message' => 'User update failed!'
                 ]);
             }
+            
 
             
         }else if ($_POST['requestType'] === "DeleteAdmin") {

@@ -8,11 +8,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         
         if ($_POST['requestType'] == 'Login') {
-            $email = $_POST['email'];
+            $username = $_POST['username'];
             $password = $_POST['password'];
         
-            // Fetch user data based on email
-            $response = $db->Login($email);
+            // Fetch user data based on username
+            $response = $db->Login($username);
         
             if ($response) {
                 $hashedPassword = $response['password']; // Get stored hashed password
@@ -22,6 +22,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     // Start session and store user ID
                     session_start();
                     $_SESSION['id'] = $response['id'];
+                    $_SESSION['username'] = $response['username'];
         
                     echo json_encode([
                         'status' => 'success',
@@ -31,13 +32,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 } else {
                     echo json_encode([
                         'status' => 'error',
-                        'message' => 'Invalid email or password'
+                        'message' => 'Invalid username or password'
                     ]);
                 }
             } else {
                 echo json_encode([
                     'status' => 'error',
-                    'message' => 'Invalid email or password'
+                    'message' => 'Invalid username or password'
                 ]);
             }
         }

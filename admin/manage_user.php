@@ -48,8 +48,8 @@ include "components/header.php";
                 <input type="text" id="update_fullname" name="fullname" class="w-full p-2 border rounded-md" required>
             </div>
             <div class="mb-3">
-                <label class="block text-sm font-medium text-gray-700">Email</label>
-                <input type="email" id="update_email" name="email" class="w-full p-2 border rounded-md" required>
+                <label class="block text-sm font-medium text-gray-700">username</label>
+                <input type="text" id="update_username" name="username" class="w-full p-2 border rounded-md" required>
             </div>
             <div class="mb-3">
                 <label class="block text-sm font-medium text-gray-700">Password</label>
@@ -88,8 +88,8 @@ include "components/header.php";
                 <input type="text" id="fullname" name="fullname" class="w-full p-2 border rounded-md" required>
             </div>
             <div class="mb-3">
-                <label class="block text-sm font-medium text-gray-700">Email</label>
-                <input type="email" id="email" name="email" class="w-full p-2 border rounded-md" required>
+                <label class="block text-sm font-medium text-gray-700">username</label>
+                <input type="username" id="username" name="username" class="w-full p-2 border rounded-md" required>
             </div>
             <div class="mb-3">
                 <label class="block text-sm font-medium text-gray-700">Password</label>
@@ -125,7 +125,7 @@ include "components/header.php";
             <thead class="bg-gray-100 text-gray-700">
                 <tr>
                     <th class="p-2">Fullname</th>
-                    <th class="p-2">Email</th>
+                    <th class="p-2">username</th>
                     <th class="p-2">User Type</th>
                     <th class="p-2">Action</th>
                 </tr>
@@ -151,14 +151,14 @@ include "components/footer.php";
         $(".showUpdateModal").click(function (e) { 
             let id = $(this).data('id')
             let name = $(this).data('name')
-            let email = $(this).data('email')
+            let username = $(this).data('username')
             let type = $(this).data('type')
 
             $("#UpdateUserModal").fadeIn();
 
             $("#update_userid").val(id);
             $("#update_fullname").val(name);
-            $("#update_email").val(email);
+            $("#update_username").val(username);
             $("#update_userType").val(type);
             console.log(type);
         });

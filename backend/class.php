@@ -10,13 +10,13 @@ class global_class extends db_connect
     }
 
 
-        public function Login($email)
+        public function Login($username)
     {
-        // Prepare the SQL query to fetch user by email
-        $query = $this->conn->prepare("SELECT * FROM `user` WHERE `email` = ? AND `status` = '1'");
+        // Prepare the SQL query to fetch user by username
+        $query = $this->conn->prepare("SELECT * FROM `user` WHERE `username` = ? AND `status` = '1'");
 
-        // Bind email parameter
-        $query->bind_param("s", $email);
+        // Bind username parameter
+        $query->bind_param("s", $username);
 
         // Execute the query
         if ($query->execute()) {

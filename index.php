@@ -29,8 +29,8 @@
 
     <form id="frmLogin" class="space-y-4 sm:space-y-5">
       <div>
-        <label for="email" class="block text-sm font-semibold text-gray-700">Email</label>
-        <input type="text" id="email" name="email" 
+        <label for="username" class="block text-sm font-semibold text-gray-700">username</label>
+        <input type="text" id="username" name="username" 
                class="mt-1 w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
       </div>
 

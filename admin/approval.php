@@ -35,6 +35,7 @@ include "components/header.php";
                 <tr>
                     <th class="p-2">Sent From</th>
                     <th class="p-2">Sent To</th>
+                    <th class="p-2">System</th>
                     <th class="p-2">Date</th>
                     <th class="p-2">Action</th>
                 </tr>
@@ -60,14 +61,14 @@ include "components/footer.php";
         $(".showUpdateModal").click(function (e) { 
             let id = $(this).data('id')
             let name = $(this).data('name')
-            let email = $(this).data('email')
+            let username = $(this).data('username')
             let type = $(this).data('type')
 
             $("#UpdateUserModal").fadeIn();
 
             $("#update_userid").val(id);
             $("#update_fullname").val(name);
-            $("#update_email").val(email);
+            $("#update_username").val(username);
             $("#update_userType").val(type);
             console.log(type);
         });

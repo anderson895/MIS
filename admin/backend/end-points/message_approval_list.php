@@ -7,6 +7,7 @@ if ($message_approval_list->num_rows > 0): ?>
         <tr>
             <td class="p-2"><?php echo htmlspecialchars($message['sender']); ?></td>
             <td class="p-2"><?php echo htmlspecialchars($message['receiver']); ?></td>
+            <td class="p-2"><?php echo htmlspecialchars($message['systemFrom']); ?></td>
           
             <td class="p-2">
                 <?= isset($message['date_sent']) 

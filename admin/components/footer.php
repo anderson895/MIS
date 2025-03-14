@@ -71,7 +71,8 @@
                 <!-- Hidden Fields -->
                 <input type="hidden" id="sender_id" name="sender_id" value="<?=$_SESSION['id']?>">
                 <input type="hidden" id="reciever_id" name="reciever_id" value="">
-                <input type="hidden" id="system" name="system" value="">
+                <input type="hidden" name="systemFrom" value="mis">
+                <input type="hidden" id="system" name="systemTo" value="">
 
                 <!-- Send Button -->
                 <button type="submit" id="btnSend_chat" class="ml-2 bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600">Send</button>

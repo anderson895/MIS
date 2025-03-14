@@ -42,7 +42,7 @@ class global_class extends db_connect
     }
 
 
-        public function send_chat($sender_id, $reciever_id, $messageinput, $fileInput, $system)
+        public function send_chat($sender_id,$reciever_id, $messageinput, $fileInput,$systemFrom,$systemTo)
     {
         $user = $this->check_account($sender_id);
 
@@ -53,13 +53,13 @@ class global_class extends db_connect
         }
 
         // Prepare query to insert chat message
-        $query = $this->conn->prepare("INSERT INTO `chat_messages` (sender_id, receiver_id, message_text, message_media, systemFrom, message_status) VALUES (?, ?, ?, ?, ?, ?)");
+        $query = $this->conn->prepare("INSERT INTO `chat_messages` (sender_id, receiver_id, message_text, message_media, systemFrom,systemTo, message_status) VALUES (?, ?, ?, ?, ?, ?,?)");
         
         if ($query === false) {
             return false; 
         }
 
-        $query->bind_param("sssssi", $sender_id, $reciever_id, $messageinput, $fileInput, $system, $status);
+        $query->bind_param("ssssssi", $sender_id, $reciever_id, $messageinput, $fileInput,$systemFrom,$systemTo, $status);
 
         return $query->execute();
     }
@@ -149,26 +149,26 @@ class global_class extends db_connect
     }
     
 
-    public function AddUser($fullname, $email, $userType,$hashed_password) {
-        // Check if email already exists
-        $check_query = $this->conn->prepare("SELECT id FROM user WHERE email = ?");
-        $check_query->bind_param("s", $email);
+    public function AddUser($fullname, $username, $userType,$hashed_password) {
+        // Check if username already exists
+        $check_query = $this->conn->prepare("SELECT id FROM user WHERE username = ?");
+        $check_query->bind_param("s", $username);
         $check_query->execute();
         $check_query->store_result();
     
         if ($check_query->num_rows > 0) {
-            return "email_exists";  // Return a flag indicating email already exists
+            return "username_exists";  // Return a flag indicating username already exists
         }
     
-        // Insert new user if email does not exist
-        $query = $this->conn->prepare("INSERT INTO user (`name`, `email`, `password`, `type`) VALUES (?, ?, ?, ?)");
-        $query->bind_param("ssss", $fullname, $email, $hashed_password, $userType);
+        // Insert new user if username does not exist
+        $query = $this->conn->prepare("INSERT INTO user (`name`, `username`, `password`, `type`) VALUES (?, ?, ?, ?)");
+        $query->bind_param("ssss", $fullname, $username, $hashed_password, $userType);
     
         if ($query->execute()) {
             return [
                 'id' => $this->conn->insert_id,  // Get last inserted ID
                 'fullname' => $fullname,
-                'email' => $email,
+                'username' => $username,
                 'hashed_password' => $hashed_password,
                 'userType' => $userType
             ];
@@ -187,20 +187,20 @@ class global_class extends db_connect
 
 
 
-    public function updateUser($userid, $fullname, $email, $userType, $hashed_password) {
-        // Check if email already exists for another user
-        $check_query = $this->conn->prepare("SELECT id FROM user WHERE email = ? AND id != ?");
-        $check_query->bind_param("si", $email, $userid);
+    public function updateUser($userid, $fullname, $username, $userType, $hashed_password) {
+        // Check if username already exists for another user
+        $check_query = $this->conn->prepare("SELECT id FROM user WHERE username = ? AND id != ?");
+        $check_query->bind_param("si", $username, $userid);
         $check_query->execute();
         $check_query->store_result();
     
         if ($check_query->num_rows > 0) {
-            return "email_exists";  // Return a flag indicating email already exists
+            return "username_exists";  // Return a flag indicating username already exists
         }
     
         // Build the UPDATE query dynamically
-        $query_str = "UPDATE user SET `name` = ?, `email` = ?, `type` = ?";
-        $params = [$fullname, $email, $userType];
+        $query_str = "UPDATE user SET `name` = ?, `username` = ?, `type` = ?";
+        $params = [$fullname, $username, $userType];
         $types = "sss";
     
         // Isama lang ang password kung may laman
@@ -223,7 +223,7 @@ class global_class extends db_connect
             return [
                 'id' => $userid,
                 'fullname' => $fullname,
-                'email' => $email,
+                'username' => $username,
                 'userType' => $userType,
                 'hashed_password' => !empty($hashed_password) ? $hashed_password : "not_updated"
             ];

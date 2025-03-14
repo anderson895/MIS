@@ -7,13 +7,13 @@ if ($fetch_all_user->num_rows>0): ?>
         ?>
        <tr>
             <td class="p-2"><?php echo htmlspecialchars($user['name']); ?></td>
-            <td class="p-2"><?php echo htmlspecialchars($user['email']); ?></td>
+            <td class="p-2"><?php echo htmlspecialchars($user['username']); ?></td>
             <td class="p-2"><?php echo htmlspecialchars($user['type']); ?></td>
             <td class="p-2 flex space-x-2">
                 <button class="showUpdateModal TogglerUpdateUser px-3 py-1 bg-blue-500 text-white rounded hover:bg-blue-600"
                 data-id="<?= $user['id']; ?>"
                 data-name="<?= $user['name']; ?>"
-                data-email="<?= $user['email']; ?>"
+                data-username="<?= $user['username']; ?>"
                 data-type="<?= $user['type']; ?>"
                 >
                 Update</button>
