@@ -1,17 +1,27 @@
 <?php 
 
 include('../class.php');
+session_start();
+
 $db = new global_class();
 
-session_start();
-$sender_id = $_SESSION['id'];
-$receiver_id = $_POST['receiver_id'];
+// Validate session variable
+$sender_id = isset($_SESSION['id']) ? $_SESSION['id'] : null;
+$receiver_id = isset($_POST['receiver_id']) ? $_POST['receiver_id'] : null;
 
-if (!$receiver_id) {
-    echo json_encode(['status' => 'error', 'message' => 'Receiver ID is missing']);
+// Check if sender ID exists
+if (!$sender_id) {
+    echo json_encode(['status' => 'error', 'message' => 'User not authenticated.']);
     exit;
 }
 
+// Check if receiver ID is provided
+if (!$receiver_id) {
+    echo json_encode(['status' => 'error', 'message' => 'Receiver ID is missing.']);
+    exit;
+}
+
+// Fetch messages
 $messages = $db->fetchUserChats($sender_id, $receiver_id);
 
 if (!empty($messages)) {
