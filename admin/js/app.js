@@ -154,7 +154,7 @@ $("#addUserForm").submit(function (e) {
                 },
             });
         }, function () {
-            alertify.error("Deletion canceled.");
+            // alertify.error("canceled.");
         });
         });
 
@@ -188,6 +188,6 @@ $("#addUserForm").submit(function (e) {
                 },
             });
         }, function () {
-            alertify.error("Deletion canceled.");
+            // alertify.error("Deletion canceled.");
         });
         });

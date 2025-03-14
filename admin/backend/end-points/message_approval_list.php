@@ -5,8 +5,8 @@ $message_approval_list = $db->message_approval_list();
 if ($message_approval_list->num_rows > 0): ?>
     <?php foreach ($message_approval_list as $message): ?>
         <tr>
-            <td class="p-2"><?php echo htmlspecialchars($message['sender']); ?></td>
-            <td class="p-2"><?php echo htmlspecialchars($message['receiver']); ?></td>
+            <td class="p-2"><?php echo htmlspecialchars($message['sender_id']); ?></td>
+            <td class="p-2"><?php echo htmlspecialchars($message['receiver_id']); ?></td>
             <td class="p-2"><?php echo htmlspecialchars($message['systemFrom']); ?></td>
           
             <td class="p-2">
