@@ -209,7 +209,7 @@ function fetchAlumni() {
                     <li class="target_chat_reciever p-2 bg-white rounded-lg shadow cursor-pointer hover:bg-gray-100" data-system='alumni' data-user_id=${user.id} data-user_name=${user.name}>
                         ${user.name}
                     </li>`;
-                    // If user_type is not categorized, add them to a default list
+                  
                     alumniList.append(userItem);
                
             });
@@ -226,7 +226,6 @@ function fetchLibrary() {
         success: function (data) {
             let libraryList = $("#library-list");
 
-            // Clear existing lists
             libraryList.empty();
 
             if (data.length === 0) {

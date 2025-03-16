@@ -92,6 +92,16 @@ class global_class extends db_connect
             return $result;
         }
     }
+    public function fetch_all_logs(){
+        $query = $this->conn->prepare("SELECT * FROM `activity_logs`
+        LEFT JOIN user ON user.id = activity_logs.log_user_id
+        ");
+
+        if ($query->execute()) {
+            $result = $query->get_result();
+            return $result;
+        }
+    }
 
 
     public function message_approval_list() {
@@ -114,15 +124,30 @@ class global_class extends db_connect
 
 
     public function DeleteAdmin($admin_id) {
+        // Update the status of the admin to '0' (effectively disabling the account)
         $query = $this->conn->prepare("UPDATE user SET status = '0' WHERE id = ?");
         $query->bind_param("i", $admin_id); 
     
         if ($query->execute()) {
-            return true; 
+            // Get the username of the admin to be deleted (disabled)
+            $user = $this->check_account($admin_id);  // Assuming this function returns user details in an array
+            
+            // Ensure that the 'username' is accessed properly
+            if ($user && isset($user[0]['username'])) {
+                $activity_description = "Deleted user: " . $user[0]['username'];
+                
+                // Log the activity for the admin performing the action
+                $this->AddLog($admin_id, $activity_description);  // Use $admin_id for the user performing the action
+    
+                return true; 
+            } else {
+                return false;  // Return false if user details are not found
+            }
         } else {
-            return false; 
+            return false;  // Return false if the update query fails
         }
     }
+    
     
 
 
@@ -149,7 +174,18 @@ class global_class extends db_connect
     }
     
 
-    public function AddUser($fullname, $username, $userType,$hashed_password) {
+    public function AddLog($userId, $description) {
+        // Prepare the insert query for activity logs
+        $log_query = $this->conn->prepare("INSERT INTO activity_logs (log_user_id, log_description) VALUES (?, ?)");
+        $log_query->bind_param("is", $userId, $description);
+        
+        // Execute the activity log query
+        return $log_query->execute();
+    }
+    
+
+
+    public function AddUser($fullname, $username, $userType, $hashed_password) {
         // Check if username already exists
         $check_query = $this->conn->prepare("SELECT id FROM user WHERE username = ?");
         $check_query->bind_param("s", $username);
@@ -165,8 +201,15 @@ class global_class extends db_connect
         $query->bind_param("ssss", $fullname, $username, $hashed_password, $userType);
     
         if ($query->execute()) {
+            // Get last inserted ID for user
+            $userId = $this->conn->insert_id;
+            
+            // Log the activity
+            $activity_description = "Added new user: $fullname ($username) position ($userType)";
+            $this->AddLog($userId, $activity_description);
+    
             return [
-                'id' => $this->conn->insert_id,  // Get last inserted ID
+                'id' => $userId,  // Get last inserted ID
                 'fullname' => $fullname,
                 'username' => $username,
                 'hashed_password' => $hashed_password,
@@ -176,6 +219,7 @@ class global_class extends db_connect
             return false;  // Return false if insertion failed
         }
     }
+    
 
 
 
@@ -203,14 +247,14 @@ class global_class extends db_connect
         $params = [$fullname, $username, $userType];
         $types = "sss";
     
-        // Isama lang ang password kung may laman
+        // Add password if provided
         if (!empty($hashed_password)) {
             $query_str .= ", `password` = ?";
             $params[] = $hashed_password;
             $types .= "s";
         }
     
-        // Tapusin ang query
+        // Complete the query
         $query_str .= " WHERE id = ?";
         $params[] = $userid;
         $types .= "i";
@@ -220,6 +264,10 @@ class global_class extends db_connect
         $query->bind_param($types, ...$params);
     
         if ($query->execute()) {
+            // Log the activity
+            $activity_description = "Updated user: $fullname ($username) to position: $userType";
+            $this->AddLog($userid, $activity_description);  // Use $userid for the user performing the action
+    
             return [
                 'id' => $userid,
                 'fullname' => $fullname,
@@ -231,6 +279,7 @@ class global_class extends db_connect
             return false;  // Return false if update failed
         }
     }
+    
     
     
 
