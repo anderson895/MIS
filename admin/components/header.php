@@ -90,12 +90,12 @@ if (isset($_SESSION['id'])) {
    
       <?php } ?>
     
-      <a href="settings.php">
+      <!-- <a href="settings.php">
           <button class="flex items-center lg:justify-start  space-x-3 text-gray-600 hover:text-red-500 hover:bg-gray-100 px-4 py-2 rounded-md transition-all duration-300">
               <span class="material-icons">settings</span>
               <span>Settings</span>
           </button>
-        </a>
+        </a> -->
     
       <a href="logout.php">
           <button class="flex items-center lg:justify-start  space-x-3 text-gray-600 hover:text-red-500 hover:bg-gray-100 px-4 py-2 rounded-md transition-all duration-300">
