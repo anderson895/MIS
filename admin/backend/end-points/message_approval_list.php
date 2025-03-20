@@ -17,9 +17,8 @@ if ($message_approval_list->num_rows > 0): ?>
 
             <td class="p-2 flex space-x-2">
                 <!-- Download Button -->
-                <a href="../assets/<?= htmlspecialchars($message['message_media']); ?>" 
-                   target="_blank" 
-                   download="<?= htmlspecialchars($message['message_media']); ?>"
+                <a href="../assets/upload_files/<?= htmlspecialchars($message['message_media']); ?>" 
+                   target="_blank" download="<?= htmlspecialchars($message['message_media']); ?>"
                    class="px-3 py-1 bg-gray-500 text-white rounded hover:bg-blue-600 flex items-center gap-2">
                     <span class="material-icons text-white">attach_file</span>
                     Download

@@ -10,6 +10,9 @@ if (isset($_SESSION['id'])) {
     // Gamitin ang check_account method
     $account = $db->check_account($admin_id);
 
+    // echo "<pre>";
+    // print_r($account);
+    // echo "</pre>";
    
     if (!empty($account)) {
       
@@ -29,7 +32,7 @@ if (isset($_SESSION['id'])) {
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>MIS</title>
+  <title>MIS-<?=ucfirst($account[0]['type'])?></title>
   
   
   <script src="https://cdn.tailwindcss.com"></script>
@@ -57,7 +60,7 @@ if (isset($_SESSION['id'])) {
   <!-- Hide Sidebar Button -->
   <div class="flex items-center space-x-4 p-4 bg-white rounded-lg shadow-lg hover:shadow-xl transition-shadow duration-300">
     <!-- Logo -->
-  <h1 class="text-1xl font-bold text-gray-800 tracking-tight text-left lg:text-left hover:text-indigo-600 transition-colors duration-300">MIS</h1>
+  <h1 class="text-1xl font-bold text-gray-800 tracking-tight text-left lg:text-left hover:text-indigo-600 transition-colors duration-300">Welcome, <?=ucfirst($account[0]['name'])?></h1>
 </div>
 
 

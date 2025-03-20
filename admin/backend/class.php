@@ -113,6 +113,7 @@ class global_class extends db_connect
             LEFT JOIN user AS sender ON sender.id = chat_messages.sender_id
             LEFT JOIN user AS receiver ON receiver.id = chat_messages.receiver_id
             WHERE chat_messages.message_status = '2'
+            ORDER BY `chat_id` DESC
         ");
     
         if ($query->execute()) {
