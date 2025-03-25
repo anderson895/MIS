@@ -170,6 +170,8 @@ include "components/header.php";
                 <tr>
                     <th class="p-2">Fullname</th>
                     <th class="p-2">username</th>
+                    <th class="p-2">email</th>
+                    <th class="p-2">phone</th>
                     <th class="p-2">User Type</th>
                     <th class="p-2">Action</th>
                 </tr>
