@@ -4,14 +4,26 @@ include "components/header.php";
 
 ?>
 
+<!-- Top bar with user profile -->
 <div class="flex justify-between items-center bg-white p-4 mb-6 rounded-md shadow-md">
-    <h2 class="text-lg font-semibold text-gray-700">Manage User</h2>
-    <div class="w-10 h-10 bg-gray-300 rounded-full flex items-center justify-center text-lg font-bold text-white">
+    <h2 class="text-lg font-semibold text-gray-700">ManageUs</h2>
+    <a href="profile.php" class="flex items-center space-x-3 cursor-pointer hover:bg-gray-100 p-2 rounded-lg">
         <?php
-        echo substr(ucfirst($account[0]['name']), 0, 1);
+        $userImage = !empty($account[0]['profile_picture']) ? $account[0]['profile_picture'] : null;
         ?>
-    </div>
+        <div class="w-10 h-10 rounded-full overflow-hidden flex items-center justify-center bg-gray-200 text-gray-600">
+            <?php if ($userImage): ?>
+                <img src="../assets/upload_files/<?php echo $userImage; ?>" alt="User Avatar" class="w-full h-full object-cover">
+            <?php else: ?>
+                <span class="material-icons text-3xl">account_circle</span>
+            <?php endif; ?>
+        </div>
+        <span class="text-gray-700 font-medium">
+            <?php echo ucfirst($account[0]['name']); ?>
+        </span>
+    </a>
 </div>
+
 
 <!-- Add User Button -->
 <div class="flex justify-between items-center mb-4">
@@ -20,10 +32,6 @@ include "components/header.php";
         + Add User
     </button>
 </div>
-
-
-
-
 
 
 
@@ -44,6 +52,11 @@ include "components/header.php";
             </div>
 
             <div class="mb-3">
+                <label class="block text-sm font-medium text-gray-700">Upload Profile</label>
+                <input type="file" id="update_upload_profile" name="upload_profile" class="w-full p-2 border rounded-md">
+            </div>
+
+            <div class="mb-3">
                 <label class="block text-sm font-medium text-gray-700">Fullname</label>
                 <input type="text" id="update_fullname" name="fullname" class="w-full p-2 border rounded-md" required>
             </div>
@@ -51,6 +64,18 @@ include "components/header.php";
                 <label class="block text-sm font-medium text-gray-700">username</label>
                 <input type="text" id="update_username" name="username" class="w-full p-2 border rounded-md" required>
             </div>
+
+            <div class="mb-3">
+                <label class="block text-sm font-medium text-gray-700">Email</label>
+                <input type="email" id="update_email" name="email" class="w-full p-2 border rounded-md" required>
+            </div>
+
+            <div class="mb-3">
+                <label class="block text-sm font-medium text-gray-700">Phone</label>
+                <input type="text" id="update_phone" name="phone" class="w-full p-2 border rounded-md" required>
+            </div>
+
+            
             <div class="mb-3">
                 <label class="block text-sm font-medium text-gray-700">Password</label>
                 <input type="password" id="update_password" name="password" class="w-full p-2 border rounded-md" >
@@ -83,14 +108,33 @@ include "components/header.php";
         
         <!-- Form for Adding User -->
         <form id="addUserForm">
+
+            <div class="mb-3">
+                <label class="block text-sm font-medium text-gray-700">Upload Profile</label>
+                <input type="file" id="upload_profile" name="upload_profile" class="w-full p-2 border rounded-md" required>
+            </div>
+
             <div class="mb-3">
                 <label class="block text-sm font-medium text-gray-700">Fullname</label>
                 <input type="text" id="fullname" name="fullname" class="w-full p-2 border rounded-md" required>
             </div>
             <div class="mb-3">
-                <label class="block text-sm font-medium text-gray-700">username</label>
+                <label class="block text-sm font-medium text-gray-700">Username</label>
                 <input type="username" id="username" name="username" class="w-full p-2 border rounded-md" required>
             </div>
+
+
+            <div class="mb-3">
+                <label class="block text-sm font-medium text-gray-700">Email</label>
+                <input type="email" id="email" name="email" class="w-full p-2 border rounded-md" required>
+            </div>
+
+            <div class="mb-3">
+                <label class="block text-sm font-medium text-gray-700">Phone</label>
+                <input type="text" id="phone" name="phone" class="w-full p-2 border rounded-md" required>
+            </div>
+
+
             <div class="mb-3">
                 <label class="block text-sm font-medium text-gray-700">Password</label>
                 <input type="password" id="password" name="password" class="w-full p-2 border rounded-md" required>
@@ -152,6 +196,8 @@ include "components/footer.php";
             let id = $(this).data('id')
             let name = $(this).data('name')
             let username = $(this).data('username')
+            let email = $(this).data('email')
+            let phone = $(this).data('phone')
             let type = $(this).data('type')
 
             $("#UpdateUserModal").fadeIn();
@@ -159,6 +205,8 @@ include "components/footer.php";
             $("#update_userid").val(id);
             $("#update_fullname").val(name);
             $("#update_username").val(username);
+            $("#update_email").val(email);
+            $("#update_phone").val(phone);
             $("#update_userType").val(type);
             console.log(type);
         });

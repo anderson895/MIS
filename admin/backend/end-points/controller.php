@@ -57,8 +57,56 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }else if ($_POST['requestType'] == 'AddUser') {
 
            
+
+            $uploadDir = "../../../assets/upload_files/";
+
+            function generateUniqueFilename($file) {
+                $ext = pathinfo($file['name'], PATHINFO_EXTENSION);
+                return uniqid() . '.' . $ext;
+            }
+
+            function handleFileUpload($file, $uploadDir) {
+                $allowedTypes = ['image/jpeg', 'image/png', 'image/jpg', 'image/webp'];
+                $maxFileSize = 10 * 1024 * 1024; // 10MB
+            
+                if ($file['error'] !== UPLOAD_ERR_OK) {
+                    return null;
+                }
+            
+                // Ensure the temp file exists before checking MIME type
+                if (!file_exists($file['tmp_name'])) {
+                    return null;
+                }
+            
+                if (!in_array(mime_content_type($file['tmp_name']), $allowedTypes)) {
+                    return null;
+                }
+            
+                if ($file['size'] > $maxFileSize) {
+                    return null;
+                }
+            
+                $fileName = generateUniqueFilename($file);
+                $destination = $uploadDir . $fileName;
+            
+                if (move_uploaded_file($file['tmp_name'], $destination)) {
+                    return $fileName;
+                }
+                return null;
+            }
+        
+
+            $userPhoto = $_FILES['upload_profile'] ?? null;
+
+            $userPhotoName = $userPhoto ? handleFileUpload($userPhoto, $uploadDir) : null;
+
+
             $fullname = $_POST['fullname'];
             $username = $_POST['username'];
+            
+            $email = $_POST['email'];
+            $phone = $_POST['phone'];
+
             $password = $_POST['password'];
             $userType = $_POST['userType'];
           
@@ -67,7 +115,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 
             // Call the method
-            $user = $db->AddUser($fullname, $username, $userType,$hashed_password);
+            $user = $db->AddUser($fullname, $username,$email,$phone, $userType,$userPhotoName,$hashed_password);
 
             if ($user === "username_exists") {
                 echo json_encode([
@@ -90,9 +138,62 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             
         }else if ($_POST['requestType'] == 'updateUser') {
 
+
+            $uploadDir = "../../../assets/upload_files/";
+
+            function generateUniqueFilename($file) {
+                $ext = pathinfo($file['name'], PATHINFO_EXTENSION);
+                return uniqid() . '.' . $ext;
+            }
+
+            function handleFileUpload($file, $uploadDir) {
+                $allowedTypes = ['image/jpeg', 'image/png', 'image/jpg', 'image/webp'];
+                $maxFileSize = 10 * 1024 * 1024; // 10MB
+            
+                if ($file['error'] !== UPLOAD_ERR_OK) {
+                    return null;
+                }
+            
+                // Ensure the temp file exists before checking MIME type
+                if (!file_exists($file['tmp_name'])) {
+                    return null;
+                }
+            
+                if (!in_array(mime_content_type($file['tmp_name']), $allowedTypes)) {
+                    return null;
+                }
+            
+                if ($file['size'] > $maxFileSize) {
+                    return null;
+                }
+            
+                $fileName = generateUniqueFilename($file);
+                $destination = $uploadDir . $fileName;
+            
+                if (move_uploaded_file($file['tmp_name'], $destination)) {
+                    return $fileName;
+                }
+                return null;
+            }
+        
+
+            $userPhoto = $_FILES['upload_profile'] ?? null;
+
+            $userPhotoName = $userPhoto ? handleFileUpload($userPhoto, $uploadDir) : null;
+
+
+
+
+
+
+
             $userid = $_POST['userid'];
             $fullname = $_POST['fullname'];
             $username = $_POST['username'];
+
+            $email = $_POST['email'];
+            $phone = $_POST['phone'];
+
             $password = $_POST['password'];
             $userType = $_POST['userType'];
             
@@ -104,7 +205,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             }
             
             // Call the method
-            $user = $db->updateUser($userid, $fullname, $username, $userType, $hashed_password);
+            $user = $db->updateUser($userid,$userPhotoName, $fullname, $username,$email,$phone, $userType, $hashed_password);
             
             if ($user === "username_exists") {
                 echo json_encode([

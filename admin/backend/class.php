@@ -186,7 +186,7 @@ class global_class extends db_connect
     
 
 
-    public function AddUser($fullname, $username, $userType, $hashed_password) {
+    public function AddUser($fullname, $username,$email,$phone, $userType,$userPhotoName,$hashed_password) {
         // Check if username already exists
         $check_query = $this->conn->prepare("SELECT id FROM user WHERE username = ?");
         $check_query->bind_param("s", $username);
@@ -198,8 +198,8 @@ class global_class extends db_connect
         }
     
         // Insert new user if username does not exist
-        $query = $this->conn->prepare("INSERT INTO user (`name`, `username`, `password`, `type`) VALUES (?, ?, ?, ?)");
-        $query->bind_param("ssss", $fullname, $username, $hashed_password, $userType);
+        $query = $this->conn->prepare("INSERT INTO user (`name`, `username`,`email`,`phone`,`profile_picture`, `password`, `type`) VALUES (?, ?,?, ?, ?, ?,?)");
+        $query->bind_param("sssssss", $fullname, $username,$email,$phone,$userPhotoName, $hashed_password, $userType);
     
         if ($query->execute()) {
             // Get last inserted ID for user
@@ -232,7 +232,7 @@ class global_class extends db_connect
 
 
 
-    public function updateUser($userid, $fullname, $username, $userType, $hashed_password) {
+    public function updateUser($userid,$userPhotoName, $fullname, $username,$email,$phone, $userType, $hashed_password) {
         // Check if username already exists for another user
         $check_query = $this->conn->prepare("SELECT id FROM user WHERE username = ? AND id != ?");
         $check_query->bind_param("si", $username, $userid);
@@ -244,9 +244,16 @@ class global_class extends db_connect
         }
     
         // Build the UPDATE query dynamically
-        $query_str = "UPDATE user SET `name` = ?, `username` = ?, `type` = ?";
-        $params = [$fullname, $username, $userType];
-        $types = "sss";
+        $query_str = "UPDATE user SET `name` = ?, `username` = ?,`email`=?,`phone`=?, `type` = ?";
+        $params = [$fullname, $username,$email,$phone, $userType];
+        $types = "sssss";
+    
+        // Include ProfilePic in the update only if it's not null
+        if ($userPhotoName !== null) {
+            $query_str .= ", profile_picture = ?";
+            $params[] = $userPhotoName;
+            $types .= "s"; // Add one more string type
+        }
     
         // Add password if provided
         if (!empty($hashed_password)) {
@@ -262,6 +269,11 @@ class global_class extends db_connect
     
         // Prepare and bind parameters
         $query = $this->conn->prepare($query_str);
+        if (!$query) {
+            error_log("Prepare failed: " . $this->conn->error);
+            return false;
+        }
+    
         $query->bind_param($types, ...$params);
     
         if ($query->execute()) {
@@ -277,9 +289,11 @@ class global_class extends db_connect
                 'hashed_password' => !empty($hashed_password) ? $hashed_password : "not_updated"
             ];
         } else {
+            error_log("Update query failed: " . $query->error);
             return false;  // Return false if update failed
         }
     }
+    
     
     
     

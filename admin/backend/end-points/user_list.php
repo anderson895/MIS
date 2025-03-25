@@ -14,6 +14,8 @@ if ($fetch_all_user->num_rows>0): ?>
                 data-id="<?= $user['id']; ?>"
                 data-name="<?= $user['name']; ?>"
                 data-username="<?= $user['username']; ?>"
+                data-email="<?= $user['email']; ?>"
+                data-phone="<?= $user['phone']; ?>"
                 data-type="<?= $user['type']; ?>"
                 >
                 Update</button>
